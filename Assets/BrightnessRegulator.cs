@@ -1,15 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
 
 
 public class BrightnessRegulator : MonoBehaviour {
+
 	// Materialを入れる
 	Material myMaterial;
-	//得点
-	public int point = 0;
-
-	public GameObject PointText;
 	// Emissionの最小値
 	private float minEmission = 0.3f;
 	// Emissionの強度
@@ -23,9 +19,7 @@ public class BrightnessRegulator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
-		PointText = GameObject.Find ("PointText");
-
+		
 		// タグによって光らせる色を変える
 		if (tag == "SmallStarTag") {
 			this.defaultColor = Color.white;
@@ -40,12 +34,16 @@ public class BrightnessRegulator : MonoBehaviour {
 
 		//オブジェクトの最初の色を設定
 		myMaterial.SetColor ("_EmissionColor", this.defaultColor*minEmission);
+
 	}
+
 
 	// Update is called once per frame
 	void Update () {
 
+
 		if (this.degree >= 0) {
+			
 			// 光らせる強度を計算する
 			Color emissionColor = this.defaultColor * (this.minEmission + Mathf.Sin (this.degree * Mathf.Deg2Rad) * this.magEmission);
 
@@ -54,26 +52,26 @@ public class BrightnessRegulator : MonoBehaviour {
 
 			//現在の角度を小さくする
 			this.degree -= this.speed;
-
-			if (tag == "SmallStarTag") {
-				point += 10;
-			} else if (tag == "LargeStarTag") {
-				point += 20;
-			} else if (tag == "SmallCloudTag") {
-				point += 15;
-			}else if(tag == "LargeCloudTag") {
-				point += 5;	
-			} else {
-				point += 0;
-			}
-
-			PointText.GetComponent<Text> ().text = point.ToString();
 		}
+			
 	}
 
 	//衝突時に呼ばれる関数
 	void OnCollisionEnter(Collision other) {
 		//角度を180に設定
 		this.degree = 180;
+
+		//pointをタグによって加算し、得点を計算する
+		if (tag == "SmallStarTag") {
+			ScoreController.point += 10;
+		} else if (tag == "LargeStarTag") {
+			ScoreController.point += 20;
+		} else if (tag == "SmallCloudTag") {
+			ScoreController.point += 15;
+		}else if(tag == "LargeCloudTag") {
+			ScoreController.point += 5;	
+		} else {
+			ScoreController.point += 0;
+		}
 	}
 }
